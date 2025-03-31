@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Speed Typing Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://i.ibb.co/M6KTWnf/pic.jpg">
+</head>
+<body>
+    <main>
+        <div class="quote-display" id="quoteDisplay"></div>
+        <section class="typing">
+            <hr />
+            <div class="score">
+                <div class="timer">
+                    <span class="timer__label">Time:</span>
+                    <span class="timer__text" id="timer">60</span>
+                </div>
+                <div class="words-per-minute">
+                    <span class="words-per-minute__label">Words/min:</span>
+                    <span class="words-per-minute__text" id="wpm">0</span>
+                </div>
+                <div class="accuracy">
+                    <span class="accuracy__label">Accuracy:</span>
+                    <span class="accuracy__text" id="accuracy">100%</span>
+                </div>
+            </div>
+            <textarea class="quote-input" id="quoteInput" placeholder="Start typing here!"></textarea>
+        </section>
+    </main>
+    <script>
+        const quoteDisplay = document.getElementById("quoteDisplay");
+        const quoteInput = document.getElementById("quoteInput");
+        const timerText = document.getElementById("timer");
+        const wpmText = document.getElementById("wpm");
+        const accuracyText = document.getElementById("accuracy");
+        
+        const quotes = [
+            "The quick brown fox jumps over the lazy dog.",
+            "Typing fast is a skill that requires practice.",
+            "Speed and accuracy go hand in hand when typing.",
+            "Consistency in practice makes perfect typing skills.",
+            "A good typist is not only fast but also accurate."
+        ];
+        
+        let currentQuote = "";
+        let timer = 60;
+        let interval = null;
+        
+        function startTest() {
+            currentQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            quoteDisplay.innerText = currentQuote;
+            quoteInput.value = "";
+            quoteInput.disabled = false;
+            quoteInput.focus();
+            clearInterval(interval);
+            timer = 60;
+            timerText.innerText = timer;
+            wpmText.innerText = "0";
+            accuracyText.innerText = "100%";
+            interval = setInterval(updateTimer, 1000);
+        }
+        
+        function updateTimer() {
+            if (timer > 0) {
+                timer--;
+                timerText.innerText = timer;
+            } else {
+                clearInterval(interval);
+                calculateResults();
+                quoteInput.disabled = true;
+                setTimeout(startTest, 2000); // Start a new test after 2 seconds
+            }
+        }
+        
+        function calculateResults() {
+            const typedText = quoteInput.value.trim();
+            const wordsTyped = typedText.split(/\s+/).length;
+            wpmText.innerText = wordsTyped;
+            
+            let correctChars = 0;
+            for (let i = 0; i < typedText.length; i++) {
+                if (typedText[i] === currentQuote[i]) {
+                    correctChars++;
+                }
+            }
+            const accuracy = Math.round((correctChars / currentQuote.length) * 100);
+            accuracyText.innerText = accuracy + "%";
+        }
+        
+        quoteInput.addEventListener("input", () => {
+            if (timer === 60) {
+                startTest();
+            }
+        });
+        
+        window.onload = startTest;
+    </script>
+</body>
+</html>
